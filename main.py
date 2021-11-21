@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 
 URL = "https://www.retinalscreening.co.uk/patient-information/screening-locations-list/"
 page = requests.get(URL)
@@ -16,6 +17,11 @@ for optician in loclistEntry:
     loclistAddress = optician.find(class_="loclist-address").get_text(separator=" ").strip()
     locationdictionary[loclistName] = loclistAddress
 
-print(locationdictionary)
+df = pd.DataFrame(data=locationdictionary, index=["Optician Address"])
+df = df.T
+
+writer = pd.ExcelWriter('Retinal_Screening_Locations.xlsx')
+
+df.to_excel(writer)
 
 
