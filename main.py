@@ -1,16 +1,21 @@
-# This is a sample Python script.
+import requests
+from bs4 import BeautifulSoup
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+URL = "https://www.retinalscreening.co.uk/patient-information/screening-locations-list/"
+page = requests.get(URL)
+
+soup = BeautifulSoup(page.content, "html.parser")
+
+results = soup.find(id="slm_results")
+loclistEntry = results.find_all("div", class_="loclist-entry")
+
+locationdictionary = {}
+
+for optician in loclistEntry:
+    loclistName = optician.find(class_="loclist-name").text
+    loclistAddress = optician.find(class_="loclist-address").get_text(separator=" ").strip()
+    locationdictionary[loclistName] = loclistAddress
+
+print(locationdictionary)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
